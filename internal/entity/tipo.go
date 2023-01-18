@@ -14,7 +14,7 @@ type Tipo struct {
 	ID        int       `json:"ID"`
 	Nome      string    `json:"nome"`
 	Color     string    `json:"color"`
-	CreatedAt time.Time `json:"createdAt"`
+	CreatedAt time.Time `json:"created_at"`
 	Ativo     bool      `json:"ativo"`
 }
 

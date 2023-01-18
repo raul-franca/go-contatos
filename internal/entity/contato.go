@@ -19,7 +19,7 @@ type Contato struct {
 	OBS       string    `json:"obs"`
 	Tipo      int       `json:"tipo"`
 	Ativo     bool      `json:"ativo"`
-	CreatedAt time.Time `json:"createdAt"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 func NewContato(nome, email, obs string, tipo int) (*Contato, error) {
