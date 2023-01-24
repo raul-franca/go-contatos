@@ -50,17 +50,20 @@ func (c *ContatoDB) FindByID(id string) (*entity.Contato, error) {
 	return &contato, nil
 }
 
-func (c *ContatoDB) FindByName(name string) (*entity.Contato, error) {
-	var contato entity.Contato
-	err := c.DB.Where("nome like ?", name).First(&contato).Error
-	if err != nil {
+func (c *ContatoDB) FindByName(name string) (*[]entity.Contato, error) {
+	var contato []entity.Contato
+	err := c.DB.Where("nome like ?", "%"+name+"%").Find(&contato).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
 	return &contato, nil
 }
-func (c *ContatoDB) FindByEmail(email string) (*entity.Contato, error) {
-	var contato entity.Contato
-	err := c.DB.Where("email like ?", email).First(&contato).Error
+func (c *ContatoDB) FindByEmail(email string) (*[]entity.Contato, error) {
+	var contato []entity.Contato
+	err := c.DB.Where("email like ?", "%"+email+"%").Find(&contato).Error
 	if err != nil {
 		return nil, err
 	}
