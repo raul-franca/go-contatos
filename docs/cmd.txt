@@ -5,3 +5,8 @@ git commit -m "first commit"
 git branch -M main
 git remote add origin https://github.com/raul-franca/go-contatos.git
 git push -u origin main
+
+go test
+go test -v
+go test -coverprofile=coverage.out
+go tool cover -html-coverage. out

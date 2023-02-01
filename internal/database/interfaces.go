@@ -9,7 +9,7 @@ type ContatoInterface interface {
 	FindAll(page, limit int, sort string) ([]entity.Contato, error)
 	FindByID(id string) (*entity.Contato, error)
 	FindByName(name string) (*[]entity.Contato, error)
-	FindByEmail(email string) (*[]entity.Contato, error)
+	FindByEmail(email string) ([]entity.Contato, error)
 	Update(contato *entity.Contato) error
 	Delete(id string) error
 }

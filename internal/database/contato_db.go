@@ -27,7 +27,7 @@ func (c *ContatoDB) FindAll(page, limit int, sort string) ([]entity.Contato, err
 	)
 
 	//regra de ordenação
-	if sort != "" && sort != "asc" && sort != "desc" {
+	if sort != "asc" && sort != "desc" {
 		sort = "asc"
 	}
 	//regras para a paginação
