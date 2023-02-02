@@ -15,9 +15,15 @@ func TestNewTipo(t *testing.T) {
 	assert.NotEmpty(t, tipo.CreatedAt)
 	assert.True(t, tipo.Ativo)
 
+	tipo, err = NewTipo("Familia", "")
+	assert.Error(t, err, ErrColorIsInvalid)
+
+	tipo, err = NewTipo("", "#fff")
+	assert.Error(t, err, ErrNomeIsRequired)
+
 }
 
 func TestColor(t *testing.T) {
-	c := entity.IsHex("#101010")
-	assert.True(t, c)
+	color := entity.IsHex("#101010")
+	assert.True(t, color)
 }

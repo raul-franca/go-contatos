@@ -25,7 +25,10 @@ func NewTipo(nome, color string) (*Tipo, error) {
 		CreatedAt: time.Now(),
 		Ativo:     true,
 	}
-	tipo.Validar()
+	err := tipo.Validar()
+	if err != nil {
+		return nil, err
+	}
 	return &tipo, nil
 }
 

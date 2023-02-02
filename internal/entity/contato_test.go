@@ -21,3 +21,22 @@ func TestNewContato(t *testing.T) {
 	assert.NotEmpty(t, contato.CreatedAt)
 	assert.True(t, contato.Ativo)
 }
+
+func TestContato_Validar(t *testing.T) {
+
+	contato, err := NewContato("Aurora", "aurora@email.com", "", 0)
+	assert.NotNil(t, contato)
+	assert.Equal(t, 1, contato.Tipo)
+
+	contato, err = NewContato("", "aurora@email.com", "", 1)
+	assert.Error(t, err, ErrNomeIsRequired)
+	assert.Nil(t, contato)
+
+	contato, err = NewContato("Aurora", "", "", 1)
+	assert.Error(t, err, ErrEmailIsRequired)
+	assert.Nil(t, contato)
+
+	contato, err = NewContato("Aurora", "aurora@email", "", 1)
+	assert.Error(t, err, ErrEmailIsInvalid)
+	assert.Nil(t, contato)
+}
