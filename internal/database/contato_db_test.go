@@ -96,6 +96,29 @@ func TestFindAll(t *testing.T) {
 
 }
 
+func TestContatoDB_FindAll2(t *testing.T) {
+	db, contatoDB := ConxaoDB()
+
+	for i := 1; i <= 8; i++ {
+		//cria varios contatos e add no db
+		contato, err := entity.NewContato(fmt.Sprintf("Nome %d", i), "email@email.com", "", 1)
+		db.Create(contato)
+		assert.NoError(t, err)
+	}
+	contatos, err := contatoDB.FindAll(0, 20, "asc")
+	assert.Nil(t, err)
+	assert.NotNil(t, contatos)
+	assert.NotNil(t, contatos[0])
+	assert.Equal(t, "Nome 1", contatos[0].Nome)
+	assert.Equal(t, "email@email.com", contatos[0].Email)
+	assert.NotNil(t, contatos[0].Tipo)
+	assert.NotNil(t, contatos[0].CreatedAt)
+	assert.True(t, contatos[0].Ativo)
+	for _, c := range contatos {
+		fmt.Printf("Nome: %s e ID: %s \n", c.Nome, c.ID)
+	}
+}
+
 func TestContatoDB_FindByID(t *testing.T) {
 
 	db, contatoDB := ConxaoDB()
@@ -109,7 +132,7 @@ func TestContatoDB_FindByID(t *testing.T) {
 	var contID entity.Contato
 	err = db.First(&contID).Error
 
-	contatoFound, _ := contatoDB.FindByID(contID.ID.String())
+	contatoFound, err := contatoDB.FindByID(contID.ID.String())
 	assert.Nil(t, err)
 	assert.Equal(t, contato.Nome, contatoFound.Nome)
 	assert.Equal(t, contato.Email, contatoFound.Email)

@@ -3,6 +3,7 @@ package database
 import (
 	"fmt"
 	"github.com/raul-franca/go-contatos/internal/entity"
+	"github.com/stretchr/testify/assert"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"testing"
@@ -50,5 +51,59 @@ func TestTipoDB_Create(t *testing.T) {
 	for _, tipo := range listCreatedTipos {
 		fmt.Println(tipo)
 	}
+
+}
+
+func TestTipoDB_Create2(t *testing.T) {
+	_, tipoDB := ConxaoTipoDB()
+	novoTipo, _ := entity.NewTipo("Amigos", "#fff3333")
+
+	err := tipoDB.Create(novoTipo)
+	assert.Empty(t, err)
+}
+
+func TestTipoDB_FindByID(t *testing.T) {
+	_, tipoDB := ConxaoTipoDB()
+	novoTipo, _ := entity.NewTipo("Amigos", "#fff3333")
+	err := tipoDB.Create(novoTipo)
+	assert.Empty(t, err)
+
+	listCreatedTipos, err := tipoDB.ListAll()
+
+	for _, tipoFound := range listCreatedTipos {
+		tipoFound, err := tipoDB.FindByID(tipoFound.ID)
+		assert.Empty(t, err)
+		assert.NotNil(t, tipoFound)
+	}
+
+	tipoFound, err := tipoDB.FindByID(3)
+	assert.Error(t, err)
+	assert.Nil(t, tipoFound)
+
+}
+func TestTipoDB_FindByName(t *testing.T) {
+
+	_, tipoDB := ConxaoTipoDB()
+
+	tipos := []entity.Tipo{
+		{Nome: "Familia", Color: "#fff000"},
+		{Nome: "Colegas", Color: "#fff000"},
+		{Nome: "Amigos", Color: "#fff000"},
+	}
+	for _, tipo := range tipos {
+		tipoDB.DB.Create(&tipo)
+	}
+
+	tiposfound, err := tipoDB.FindByName("a")
+	assert.Nil(t, err)
+	assert.NotEmpty(t, tiposfound)
+
+	for _, founds := range *tiposfound {
+		fmt.Println(founds)
+	}
+
+	tiposfound, _ = tipoDB.FindByName("Amigos")
+	assert.Nil(t, err)
+	assert.NotEmpty(t, tiposfound)
 
 }
