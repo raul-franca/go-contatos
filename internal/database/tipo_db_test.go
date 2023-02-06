@@ -16,7 +16,7 @@ import (
 //	Update(tipo *entity.Tipo) error
 //	Delete(id int) error
 
-func ConxaoTipoDB() (*gorm.DB, *TipoDB) {
+func ConexaoTipoDB() (*gorm.DB, *TipoDB) {
 
 	//Criar conexão com banco
 	db, err := gorm.Open(sqlite.Open("file::memory:"), &gorm.Config{})
@@ -33,7 +33,7 @@ func ConxaoTipoDB() (*gorm.DB, *TipoDB) {
 
 func TestTipoDB_Create(t *testing.T) {
 
-	_, tipoDB := ConxaoTipoDB()
+	_, tipoDB := ConexaoTipoDB()
 
 	tipos := []entity.Tipo{
 		{Nome: "Familia", Color: "#fff000"},
@@ -55,7 +55,7 @@ func TestTipoDB_Create(t *testing.T) {
 }
 
 func TestTipoDB_Create2(t *testing.T) {
-	_, tipoDB := ConxaoTipoDB()
+	_, tipoDB := ConexaoTipoDB()
 	novoTipo, _ := entity.NewTipo("Amigos", "#fff3333")
 
 	err := tipoDB.Create(novoTipo)
@@ -63,7 +63,7 @@ func TestTipoDB_Create2(t *testing.T) {
 }
 
 func TestTipoDB_FindByID(t *testing.T) {
-	_, tipoDB := ConxaoTipoDB()
+	_, tipoDB := ConexaoTipoDB()
 	novoTipo, _ := entity.NewTipo("Amigos", "#fff3333")
 	err := tipoDB.Create(novoTipo)
 	assert.Empty(t, err)
@@ -83,7 +83,7 @@ func TestTipoDB_FindByID(t *testing.T) {
 }
 func TestTipoDB_FindByName(t *testing.T) {
 
-	_, tipoDB := ConxaoTipoDB()
+	_, tipoDB := ConexaoTipoDB()
 
 	tipos := []entity.Tipo{
 		{Nome: "Familia", Color: "#fff000"},
@@ -105,5 +105,39 @@ func TestTipoDB_FindByName(t *testing.T) {
 	tiposfound, _ = tipoDB.FindByName("Amigos")
 	assert.Nil(t, err)
 	assert.NotEmpty(t, tiposfound)
+
+}
+
+func TestTipoDB_Update(t *testing.T) {
+	_, tipoDB := ConexaoTipoDB()
+
+	tipo, err := entity.NewTipo("Familia", "#fff")
+	assert.Nil(t, err)
+	err = tipoDB.Create(tipo)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	tipo.Nome = "Amigos"
+	tipo.Color = "#000"
+	err = tipoDB.Update(tipo)
+	tipoFound, err := tipoDB.FindByID(1)
+	assert.Nil(t, err)
+	assert.Equal(t, tipo.Nome, tipoFound.Nome)
+	assert.Equal(t, tipo.Color, tipoFound.Color)
+}
+
+func TestTipoDB_Delete(t *testing.T) {
+
+	_, tipoDB := ConexaoTipoDB()
+	tipo, err := entity.NewTipo("Familia", "#fff")
+	assert.NoError(t, err)
+	tipoDB.Create(tipo)
+
+	err = tipoDB.Delete(1)
+	assert.NoError(t, err)
+
+	_, err = tipoDB.FindByID(tipo.ID)
+	assert.NotNil(t, err)
 
 }
